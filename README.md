@@ -26,7 +26,8 @@ public/                 ← esto es lo que se publica
     caso-1..4.jpg       Transformaciones de clientes
   video/
     escuela-mac-os.mp4  Vídeo de presentación (19 MB, 6:06 min, 640x360)
-    portada.webp        Portada del vídeo, usada como cartel (1280x720)
+    portada.webp        Portada del vídeo (1280x720, 79 KB)
+    portada-960.webp    La misma portada para móvil (960x540, 53 KB)
 serve.mjs               Servidor local de previsualización (no se despliega)
 vercel.json             cleanUrls + cabeceras de seguridad y caché
 _original/              Borrador antiguo en un solo HTML, con las imágenes incrustadas

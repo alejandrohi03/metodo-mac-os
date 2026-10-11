@@ -597,7 +597,7 @@ footer a:hover{color:#fff;border-bottom-color:var(--red)}
         <!-- Fachada clicable: se ve el cartel del vídeo y el reproductor solo se
              crea al pulsar, así la página no descarga ni un byte de vídeo antes. -->
         <button class="facade" type="button" id="play" aria-label="Reproducir el vídeo de presentación del Método MAC-OS">
-          <img src="video/portada.webp" alt="Portada del vídeo de presentación del método MAC-OS" width="1280" height="720" decoding="async">
+          <img src="video/portada.webp" srcset="video/portada-960.webp 960w, video/portada.webp 1280w" sizes="(min-width: 960px) 470px, 90vw" alt="Portada del vídeo: mi metodología MAC-OS — músculo, actitud y salud" width="1280" height="720" decoding="async">
           <span class="facade__play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Ver el vídeo</span>
         </button>
       </div>
