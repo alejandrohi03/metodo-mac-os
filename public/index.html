@@ -826,6 +826,13 @@ window.DSH_GA_ID = 'G-XXXXXXXXXX';
 (function(){
   var id = window.DSH_GA_ID;
   if(!id || id.indexOf('XXXX') > -1) return;
+  /* Con ?ga=... en la URL se activa el modo de prueba: se prepara gtag para
+     poder verificar los eventos sin cargar el script de Google ni enviar nada. */
+  if(location.search.indexOf('ga=') > -1){
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function(){ dataLayer.push(arguments); };
+    return;
+  }
   var s = document.createElement('script');
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
@@ -904,12 +911,56 @@ window.DSH_GA_ID = 'G-XXXXXXXXXX';
   });
 })();
 
+/* --- Atribución: conserva los parámetros utm_* de la URL y los pasa a Calendly.
+       Así sabes si el lead vino de la biografía de Instagram, de un reel o de un anuncio.
+       Se guardan en sessionStorage porque el enlace de Calendly se pulsa a veces
+       después de navegar dentro de la página. --- */
+(function(){
+  var CLAVES = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'];
+  var CALENDLY = 'calendly.com';
+  var guardado = '';
+
+  try {
+    var url = new URLSearchParams(location.search);
+    var vistos = [];
+    CLAVES.forEach(function(k){
+      var v = url.get(k);
+      if(v){ vistos.push(k + '=' + encodeURIComponent(v)); }
+    });
+    if(vistos.length){
+      guardado = vistos.join('&');
+      sessionStorage.setItem('macos_utm', guardado);
+    } else {
+      guardado = sessionStorage.getItem('macos_utm') || '';
+    }
+  } catch(e){ return; }   // navegadores con almacenamiento bloqueado: se sigue sin atribución
+
+  if(!guardado) return;
+
+  /* El evento de GA4 se enriquece con el origen, para poder cruzarlo en los informes. */
+  var params = new URLSearchParams(guardado);
+  window.DSH_UTM = {
+    source: params.get('utm_source') || '(directo)',
+    medium: params.get('utm_medium') || '(ninguno)',
+    campaign: params.get('utm_campaign') || '(ninguna)'
+  };
+
+  document.querySelectorAll('a[href*="' + CALENDLY + '"]').forEach(function(a){
+    a.href += (a.href.indexOf('?') > -1 ? '&' : '?') + guardado;
+  });
+})();
+
 /* --- Seguimiento de clics en CTA --- */
 (function(){
   document.querySelectorAll('[data-cta]').forEach(function(a){
     a.addEventListener('click', function(){
       if(typeof gtag === 'function'){
-        gtag('event','cta_click', { cta_id: a.dataset.cta, link_url: a.href });
+        gtag('event','cta_click', {
+          cta_id: a.dataset.cta,
+          link_url: a.href,
+          traffic_source: (window.DSH_UTM && window.DSH_UTM.source) || '(directo)',
+          traffic_campaign: (window.DSH_UTM && window.DSH_UTM.campaign) || '(ninguna)'
+        });
       }
     });
   });
