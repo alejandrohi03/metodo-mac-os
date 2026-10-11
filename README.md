@@ -108,25 +108,41 @@ carpeta del proyecto. No hace falta build.
 
 ## Opción B · GitHub + panel de Vercel (despliegue automático)
 
-Cada `git push` despliega solo. Es lo que yo elegiría para el día a día.
+Cada `git push` despliega solo. Es la vía recomendada para el día a día.
 
-**El repositorio ya está preparado**: inicializado en `main`, con el commit inicial hecho y
-el remoto configurado a `https://github.com/alejandrohi03/metodo-mac-os.git`. Solo falta
-que el repositorio exista en GitHub y empujar:
+**El repositorio ya está publicado:** <https://github.com/alejandrohi03/metodo-mac-os> (público,
+rama `main`). Para actualizar la web, después de cada cambio:
 
 ```powershell
 cd "C:\Users\mandu\Downloads\01 Proyectos\Webs\Metodo MAC-OS Web"
-git push -u origin main
+git add -A
+git commit -m "Describe aquí el cambio"
+git push
 ```
 
-Si alguna vez te vuelve a pedir usuario y contraseña y falla, el motivo está en tu
-`~/.gitconfig`, que apunta a un GitHub CLI desinstalado. Se arregla con:
+### Si Git vuelve a pedir credenciales
+
+GitHub CLI quedó instalado **solo para tu usuario** en:
+
+```
+%LOCALAPPDATA%\Microsoft\WinGet\Packages\GitHub.cli_Microsoft.Winget.Source_8wekyb3d8bbwe\bin\gh.exe
+```
+
+Para tener `gh` disponible en cualquier terminal, cierra y vuelve a abrir PowerShell (winget
+añadió la ruta al PATH, pero los procesos ya abiertos no la ven). Comprueba con:
 
 ```powershell
-git config --global --unset credential.https://github.com.helper
-git config --global --unset-all credential.helper
+gh auth status     # debe decir: Logged in to github.com account alejandrohi03
+```
+
+Si algún día te pide usuario y contraseña y falla, el motivo está en tu `~/.gitconfig`, que
+apunta a un GitHub CLI que ya no existía en esa ruta. `gh auth setup-git` ya lo reconfiguró
+para usar el llavero de Windows. Si volviera a pasar:
+
+```powershell
+gh auth setup-git
 # o, solo para un comando concreto:
-git -c credential.helper= -c credential.helper=manager push -u origin main
+git -c credential.helper= -c credential.helper=manager push
 ```
 
 Después, en <https://vercel.com/new>:
