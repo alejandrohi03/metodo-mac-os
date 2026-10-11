@@ -177,22 +177,67 @@ Vercel → tu proyecto → **Settings → Domains → Add**. Escribe el dominio 
 
 El certificado HTTPS se emite solo, en unos minutos.
 
-### 2. Comprobar que las conversiones se miden
+### 2. Medición: qué te dice la web
 
-Con el ID de GA4 ya puesto, abre la web publicada y haz clic en cada botón. En
-**GA4 → Informes → Tiempo real** deberías ver el evento `cta_click` con el parámetro
-`cta_id` (`hero`, `llamada`, `whatsapp-mid`, `como`, `coach`, `footer`) y, al pulsar
-play en el vídeo, el evento `video_play`.
+Hay dos herramientas y **no son intercambiables**:
 
-Para marcar la conversión: **GA4 → Administrar → Eventos** y marca `cta_click` como
-conversión. Así podrás ver qué botón convierte más.
+| | Vercel Web Analytics | Google Analytics 4 |
+| --- | --- | --- |
+| Qué mide | Visitas, páginas, referrers, países, dispositivos | Todo lo anterior **más los clics en cada CTA** |
+| Coste en Hobby | Gratis, 50.000 eventos/mes | Gratis, sin límite práctico |
+| Clics en botones | **No** (solo en plan Pro) | Sí |
+| Ventana de datos | 1 mes (se pierde lo anterior) | 14 meses |
 
-### 3. (Opcional) Analítica de Vercel
+**Conclusión:** activa las dos. Vercel para el recuento fiable de visitas, GA4 para saber qué
+botón convierte. Desactivar GA4 te dejaría sin saber si el lead vino del hero o del pie.
 
-Vercel → tu proyecto → **Analytics → Enable**. Es gratis en el plan Hobby y no necesita
-código.
+Las dos son sin cookies: no necesitas un banner de consentimiento. La política de privacidad
+ya las menciona.
 
-### 4. Revisar el vídeo
+**Eventos que envía la página:**
+
+| Evento | Cuándo | Datos que adjunta |
+| --- | --- | --- |
+| `cta_click` | Clic en cualquiera de los 6 botones | `cta_id`, `traffic_source`, `traffic_campaign` |
+| `video_play` | Al pulsar *Ver el vídeo* | `video_id`, `source` |
+| `video_fallback_youtube` | Solo si el MP4 falla y entra YouTube | `video_id` |
+
+Los `cta_id` son: `hero`, `llamada`, `whatsapp-mid`, `como`, `coach`, `footer`.
+
+**Para que GA4 te avise de los leads:** en GA4, *Administrar → Eventos*, marca `cta_click`
+como **evento clave**. Luego crea una audiencia con quien lo dispare y, si algún día usas
+Google Ads, importa ese evento como conversión.
+
+**Comprobar que funciona:** abre la web publicada, pulsa cada botón y mira
+*GA4 → Informes → Tiempo real*. Deberías ver 6 `cta_click` y 1 `video_play`. Si no aparece
+nada, el ID no está puesto o el despliegue no ha terminado.
+
+### 3. Saber de dónde viene cada lead (UTM)
+
+Los parámetros `utm_*` de la URL se guardan y **se añaden automáticamente a los cuatro enlaces
+de Calendly**. Así, cuando alguien reserva, ves en Calendly de dónde salió.
+
+Cómo usarlos en Instagram:
+
+| Dónde | Enlace a poner |
+| --- | --- |
+| Biografía | `tudominio.com/?utm_source=instagram&utm_medium=bio` |
+| Reel | `tudominio.com/?utm_source=instagram&utm_medium=reel&utm_campaign=ganar_musculo` |
+| Anuncio | `tudominio.com/?utm_source=facebook&utm_medium=paid&utm_campaign=delgadez_enero` |
+
+Reglas: siempre en minúsculas, sin acentos ni espacios (usa `_`). Si no pones nada, la visita
+cuenta como directa, que es correcto — no se inventa atribución.
+
+Con esto, en Calendly puedes descartar de un vistazo a los curiosos que no encajan, y en GA4
+ves qué `cta_id` convierte mejor para reordenar la página.
+
+### 4. (Opcional) Analítica de Vercel
+
+Vercel → tu proyecto → **Analytics → Enable**. Gratis en Hobby y sin tocar código. Recuerda
+que en Hobby **no incluye eventos personalizados** y la ventana de datos es de 1 mes, así que
+complementa, no sustituye, a GA4.
+
+### 5. Revisar el vídeo
 
 El vídeo **se aloja en el propio sitio**, no en YouTube. Se carga con un patrón de "fachada
 clicable": primero se ve el cartel (`video/poster.jpg`, extraído de un fotograma del propio
@@ -220,7 +265,7 @@ HandBrake → Preset "Fast 1080p30" → pestaña Output → marca "Web Optimized
 Sustituye el archivo manteniendo el nombre `escuela-mac-os.mp4` y regenera el cartel
 pidiendo un fotograma nuevo (o cambia `poster.jpg` por una captura tuya).
 
-### 5. Si prefieres usar YouTube en lugar del archivo local
+### 6. Si prefieres usar YouTube en lugar del archivo local
 
 Es un cambio de una línea en `public/index.html`. Busca `var FILE = 'video/escuela-mac-os.mp4';`
 dentro del script del vídeo y sustituye el cuerpo del `click` por:
