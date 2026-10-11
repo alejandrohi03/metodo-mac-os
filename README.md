@@ -12,24 +12,31 @@ carpeta `public/` tal cual.
 ```
 public/                 ← esto es lo que se publica
   index.html            Landing completa (las 8 secciones)
+  favicon.ico           Favicon multiuso
   privacidad.html       Política de privacidad  -> /privacidad
   terminos.html         Términos y condiciones  -> /terminos
   robots.txt
   sitemap.xml
   img/
+    logo.jpg            Logo OA completo (2048x2048), para Open Graph
+    logo-oa-512.png     Emblema OA suelto, sin el texto
+    logo-oa-180.png     Emblema para apple-touch-icon y encabezado
+    favicon-32.png      Favicon PNG
     oscar.jpg           Foto del coach
     caso-1..4.jpg       Transformaciones de clientes
-    favicon.svg
   video/
     escuela-mac-os.mp4  Vídeo de presentación (19 MB, 6:06 min, 640x360)
-    poster.jpg          Fotograma extraído del propio vídeo, como cartel
+    portada.webp        Portada del vídeo, usada como cartel (1280x720)
 serve.mjs               Servidor local de previsualización (no se despliega)
 vercel.json             cleanUrls + cabeceras de seguridad y caché
 _original/              Borrador antiguo en un solo HTML, con las imágenes incrustadas
 ```
 
 El peso total de la carpeta que se publica es de unos **20 MB**, casi todo el vídeo.
-Las imágenes suman 168 KB y el HTML 35 KB.
+Las imágenes suman 295 KB y el HTML 37 KB.
+
+El logo se usó para tres cosas: el emblema OA en el encabezado y el pie, el favicon
+(recortado del propio logo) y la imagen de Open Graph cuando alguien comparte el enlace.
 
 ## Ver la web en local
 
@@ -103,14 +110,23 @@ carpeta del proyecto. No hace falta build.
 
 Cada `git push` despliega solo. Es lo que yo elegiría para el día a día.
 
+**El repositorio ya está preparado**: inicializado en `main`, con el commit inicial hecho y
+el remoto configurado a `https://github.com/alejandrohi03/metodo-mac-os.git`. Solo falta
+que el repositorio exista en GitHub y empujar:
+
 ```powershell
 cd "C:\Users\mandu\Downloads\01 Proyectos\Webs\Metodo MAC-OS Web"
-git init
-git add .
-git commit -m "Landing Método MAC-OS"
-git branch -M main
-git remote add origin https://github.com/TU-USUARIO/metodo-mac-os.git
 git push -u origin main
+```
+
+Si alguna vez te vuelve a pedir usuario y contraseña y falla, el motivo está en tu
+`~/.gitconfig`, que apunta a un GitHub CLI desinstalado. Se arregla con:
+
+```powershell
+git config --global --unset credential.https://github.com.helper
+git config --global --unset-all credential.helper
+# o, solo para un comando concreto:
+git -c credential.helper= -c credential.helper=manager push -u origin main
 ```
 
 Después, en <https://vercel.com/new>:
