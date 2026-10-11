@@ -1,0 +1,14 @@
+{
+  "name": "metodo-mac-os-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Landing page del Método MAC-OS (Óscar Anguitar). Sitio estático servido desde /public.",
+  "type": "module",
+  "scripts": {
+    "start": "node serve.mjs",
+    "dev": "node serve.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

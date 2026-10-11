@@ -1,0 +1,13 @@
+# Dependencias y artefactos locales
+node_modules/
+.vercel/
+.vercelignore
+
+# Capturas de revisión y archivos temporales
+_shots/
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini

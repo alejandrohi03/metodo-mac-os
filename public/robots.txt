@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /_original/
+
+Sitemap: https://metodomacos.com/sitemap.xml
