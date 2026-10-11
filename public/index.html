@@ -154,7 +154,7 @@ h1,h2,h3{
   margin:0;
   text-wrap:balance;
 }
-h1{font-size:clamp(2.45rem,8.4vw,4.4rem);text-transform:uppercase}
+h1{font-size:clamp(1.9rem,5.4vw,2.8rem);text-transform:uppercase}
 h2{font-size:clamp(2rem,6.4vw,3.5rem);text-transform:uppercase}
 h3{font-weight:600;line-height:1.1;letter-spacing:.01em}
 p{margin:0 0 1rem}
@@ -234,7 +234,7 @@ section{padding:var(--sec) 0}
   padding-bottom:clamp(16px,2.4vw,24px);
   border-bottom:1px solid var(--line);
 }
-.brand a{
+.brand > a{
   display:flex;align-items:center;gap:.7rem;
   text-decoration:none;color:#fff;
   font-family:"Barlow Condensed",sans-serif;font-weight:700;
@@ -245,6 +245,28 @@ section{padding:var(--sec) 0}
   font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;
   color:var(--mut-2);white-space:nowrap;
 }
+
+/* ---------- barra superior fija + menú ---------- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--ink);
+  border-bottom:1px solid var(--line);
+}
+.topbar .brand{padding-top:12px;padding-bottom:12px;border-bottom:0}
+.topnav{display:flex;align-items:center;gap:clamp(.8rem,1.8vw,1.5rem)}
+.topnav a{
+  color:var(--mut);text-decoration:none;white-space:nowrap;
+  font-size:.78rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  padding-bottom:3px;border-bottom:1px solid transparent;
+  transition:color .15s ease,border-color .15s ease;
+}
+.topnav a:hover,.topnav a:focus-visible,.topnav a.is-on{color:#fff;border-bottom-color:var(--red)}
+.btn--nav{
+  padding:11px 18px;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;flex:none;
+}
+/* Los anclajes no quedan tapados por la barra */
+html{scroll-padding-top:92px}
 
 /* ---------- 1 · HERO ---------- */
 .hero{
@@ -264,16 +286,32 @@ section{padding:var(--sec) 0}
   gap:clamp(34px,5vw,60px);
 }
 .hero__grid > *{min-width:0}
-.hero h1{max-width:20ch}
-/* "ATENCIÓN:" no es una palabra más: es el filtro. Va en rojo y a línea completa. */
-.hero h1 .bang{display:block;color:var(--red);margin-bottom:.06em}
+.hero h1{max-width:26ch}
+/* "ATENCIÓN:" no es una palabra más: es el filtro. Etiqueta pequeña en rojo. */
+.hero h1 .bang{
+  display:block;color:var(--red);
+  font-size:clamp(.8rem,2.1vw,.95rem);font-weight:600;letter-spacing:.3em;
+  margin-bottom:.85rem;
+}
+/* Lo accesorio se reduce para que mande la promesa. */
+.hero h1 .h1__lede{
+  display:block;color:#DEDEDE;text-transform:none;
+  font-size:clamp(1.2rem,3.3vw,1.65rem);font-weight:600;line-height:1.22;
+  margin-bottom:.5rem;
+}
+/* Lo importante, grande: 7-10 kg y MAC-OS en el rojo de la casa. */
+.hero h1 .h1__claim{
+  display:block;color:#fff;
+  font-size:clamp(2.1rem,6.6vw,3.4rem);line-height:.97;
+}
+.hero h1 .hl{color:var(--red)}
 
 .hero__sub{
-  margin-top:1.5rem;
-  font-size:clamp(1.06rem,2.6vw,1.34rem);
+  margin-top:1.4rem;
+  font-size:clamp(1rem,2.4vw,1.2rem);
   line-height:1.45;
   color:#E8E8E8;
-  max-width:34ch;
+  max-width:36ch;
   font-weight:500;
 }
 
@@ -503,7 +541,11 @@ section{padding:var(--sec) 0}
   border:1px solid var(--line);position:relative;
   display:flex;flex-direction:column;
 }
-.gal img{width:100%;height:auto}
+/* Casos: todas el mismo recorte. aspect-ratio necesita height:auto, porque los
+   atributos width/height de cada <img> fijarían la altura por sí solos. */
+.gal img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:center 22%;transition:transform .35s ease}
+.gal figure{overflow:hidden}
+.gal figure:hover img{transform:scale(1.04)}
 .gal figcaption{
   font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
   color:var(--mut-2);padding:7px 9px;
@@ -535,6 +577,21 @@ footer a:hover{color:#fff;border-bottom-color:var(--red)}
 .legal--fine{margin-top:1.6rem}
 @media (max-width:619px){.legal--fine{display:none}}
 
+/* ---------- barra superior en pantallas medias y pequeñas ---------- */
+@media (max-width:1199px){
+  .topbar .brand__mark{display:none}
+}
+@media (max-width:959px){
+  html{scroll-padding-top:132px}
+  .topbar .brand{flex-wrap:wrap;row-gap:10px}
+  .topbar .topnav{
+    order:3;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;border-top:1px solid var(--line);padding-top:10px;
+  }
+  .topbar .topnav::-webkit-scrollbar{display:none}
+  .topbar .btn--nav{margin-left:auto}
+}
+
 /* ---------- escritorio ---------- */
 @media (min-width:620px){
   .gal{grid-template-columns:1fr 1fr}
@@ -557,15 +614,24 @@ footer a:hover{color:#fff;border-bottom-color:var(--red)}
   .split{grid-template-columns:1fr 1fr}
 }
 
+/* ---------- animaciones de aparición (se activan con JS) ---------- */
+.rv{
+  opacity:0;transform:translateY(20px);
+  transition:opacity .65s cubic-bezier(.2,.6,.2,1),transform .65s cubic-bezier(.2,.6,.2,1);
+}
+.rv.in{opacity:1;transform:none}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{transition:none!important;animation:none!important}
   .facade:hover img{transform:none}
+  .rv{opacity:1!important;transform:none!important}
 }
 
 /* Objetivos táctiles cómodos en móvil */
 @media (max-width:520px){
   .btn{width:100%;justify-content:center}
+  .topbar .btn--nav{width:auto;padding:10px 13px;font-size:.74rem}
   .facade__play{padding:13px 18px;font-size:.86rem}
   .coach__photo figcaption{font-size:.68rem}
 }</style>
@@ -574,21 +640,35 @@ footer a:hover{color:#fff;border-bottom-color:var(--red)}
 
 <div id="prog" aria-hidden="true"></div>
 
-<!-- Marca: el emblema OA delante de la retícula, antes del gancho -->
-<div class="wrap brand">
-  <a href="#inicio">
-    <img src="img/logo-oa-180.png" width="180" height="180" alt="Óscar Anguitar, Fitness Coach">
-    <span>Óscar Anguitar</span>
-  </a>
-  <span class="brand__mark">Fitness Coach</span>
-</div>
+<!-- Barra superior: marca + menú de secciones + CTA. Se queda fija al bajar. -->
+<header class="topbar">
+  <div class="wrap brand">
+    <a href="#inicio">
+      <img src="img/logo-oa-180.png" width="180" height="180" alt="Óscar Anguitar, Fitness Coach">
+      <span>Óscar Anguitar</span>
+    </a>
+    <nav class="topnav" aria-label="Secciones de la página">
+      <a href="#llamada">La llamada</a>
+      <a href="#filtro">¿Es para ti?</a>
+      <a href="#como">El método</a>
+      <a href="#garantia">Garantía</a>
+      <a href="#coach">El coach</a>
+    </nav>
+    <span class="brand__mark">Fitness Coach</span>
+    <a class="btn btn--nav" href="https://calendly.com/oacoachfitness/solucion-definitiva-a-la-delgadez-sin-sacrificar-clon" target="_blank" rel="noopener" data-cta="nav">Reservar llamada</a>
+  </div>
+</header>
 
 <!-- ============================ 1 · HERO ============================ -->
 <section class="hero" id="inicio">
   <div class="wrap hero__grid">
     <div>
-      <h1><span class="bang">Atención:</span> Solo para personas +25 años delgadas que quieren ganar músculo y verse fuertes</h1>
-      <p class="hero__sub">Te ayudo a ganar 7-10 kg o más en tiempo récord, sin ganar barriga ni comer hasta reventar con el método MAC-OS.</p>
+      <h1>
+        <span class="bang">Atención:</span>
+        <span class="h1__lede">Solo para personas +25 años delgadas que quieren ganar músculo y verse fuertes</span>
+        <span class="h1__claim">Gana <span class="hl">7-10 kg de músculo</span> con el método <span class="hl">MAC-OS</span></span>
+      </h1>
+      <p class="hero__sub">Sin ganar barriga ni comer hasta reventar: nutrición y entreno adaptados a tus horarios, con seguimiento diario.</p>
     </div>
 
     <div>
@@ -818,31 +898,10 @@ footer a:hover{color:#fff;border-bottom-color:var(--red)}
 </footer>
 
 <!-- ==================== Google Analytics (GA4) ====================
-     1) Sustituye G-XXXXXXXXXX por tu ID de medición real.
-     2) Mientras siga el marcador, no se carga nada y no se envía ninguna cookie.
+     ID G-E6HG2LH68D en js/analytics.js. Solo se carga si el visitante acepta
+     el banner de consentimiento (RGPD); la elección se guarda en localStorage.
      Los clics en CTA se envían como evento "cta_click" con el parámetro cta_id. -->
-<script>
-window.DSH_GA_ID = 'G-XXXXXXXXXX';
-(function(){
-  var id = window.DSH_GA_ID;
-  if(!id || id.indexOf('XXXX') > -1) return;
-  /* Con ?ga=... en la URL se activa el modo de prueba: se prepara gtag para
-     poder verificar los eventos sin cargar el script de Google ni enviar nada. */
-  if(location.search.indexOf('ga=') > -1){
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function(){ dataLayer.push(arguments); };
-    return;
-  }
-  var s = document.createElement('script');
-  s.async = true;
-  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
-  document.head.appendChild(s);
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function(){ dataLayer.push(arguments); };
-  gtag('js', new Date());
-  gtag('config', id);
-})();
-</script>
+<script src="js/analytics.js"></script>
 
 <script>
 /* --- Progreso de lectura --- */
@@ -966,6 +1025,47 @@ window.DSH_GA_ID = 'G-XXXXXXXXXX';
   });
   var y = document.getElementById('year');
   if(y) y.textContent = new Date().getFullYear();
+})();
+
+/* --- Animaciones de aparición al bajar + sección activa en el menú.
+       Las clases .rv se añaden con JS: sin JS (o con movimiento reducido)
+       el contenido se ve siempre, nunca al revés. --- */
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sel = '.tag, .sec__title, .call__grid > *, .split, .method .mrow, .shout__row > div, ' +
+            '.seal, .g2, .coach, .gal, .close__grid > *, .hero .frame, .hero .seal, .hero__cta, .stats';
+  var targets = [].slice.call(document.querySelectorAll(sel));
+
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(ent){
+      ent.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {rootMargin:'0px 0px -8% 0px', threshold:0.12});
+    targets.forEach(function(el, i){
+      if(el.classList.contains('mrow')) el.style.transitionDelay = ((i % 4) * 70) + 'ms';
+      el.classList.add('rv');
+      io.observe(el);
+    });
+  }
+
+  /* Menú: marca en rojo la sección que se está viendo. */
+  var enlaces = {}, secciones = [];
+  document.querySelectorAll('.topnav a[href^="#"]').forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    enlaces[id] = a;
+    var s = document.getElementById(id);
+    if(s) secciones.push(s);
+  });
+  if('IntersectionObserver' in window && secciones.length){
+    var io2 = new IntersectionObserver(function(ent){
+      ent.forEach(function(e){
+        var a = enlaces[e.target.id];
+        if(a) a.classList.toggle('is-on', e.isIntersecting);
+      });
+    }, {rootMargin:'-40% 0px -55% 0px'});
+    secciones.forEach(function(s){ io2.observe(s); });
+  }
 })();
 </script>
 </body>
