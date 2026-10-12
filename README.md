@@ -25,7 +25,7 @@ public/                 ← esto es lo que se publica
     oscar.jpg           Foto del coach
     caso-1..4.jpg       Transformaciones de clientes
   video/
-    escuela-mac-os.mp4  Vídeo de presentación (19 MB, 6:06 min, 640x360)
+    escuela-mac-os.mp4  Vídeo de presentación (40,7 MB, 6:06 min, 1280x720)
     portada.webp        Portada del vídeo (1280x720, 79 KB)
     portada-960.webp    La misma portada para móvil (960x540, 53 KB)
 serve.mjs               Servidor local de previsualización (no se despliega)
@@ -33,7 +33,7 @@ vercel.json             cleanUrls + cabeceras de seguridad y caché
 _original/              Borrador antiguo en un solo HTML, con las imágenes incrustadas
 ```
 
-El peso total de la carpeta que se publica es de unos **20 MB**, casi todo el vídeo.
+El peso total de la carpeta que se publica es de unos **41 MB**, casi todo el vídeo.
 Las imágenes suman 295 KB y el HTML 37 KB.
 
 El logo se usó para tres cosas: el emblema OA en el encabezado y el pie, el favicon
@@ -295,11 +295,14 @@ recomendando otros canales al terminar.
 - **Imágenes.** Extraídas del borrador original a archivos sueltos (antes iban incrustadas
   en base64 dentro del HTML, que pesaba 236 KB). Ahora el HTML pesa 35 KB y las imágenes se
   cachean un año con `Cache-Control: immutable`.
-- **Vídeo.** 19 MB servidos por rangos HTTP desde `/video/`. Sin cookies de terceros. El
-  cartel va con `preload` para que sea lo primero que se ve.
-  Ojo con el ancho de banda: cada visita que vea el vídeo entero consume ~19 MB. El plan
-  gratuito de Vercel incluye 100 GB al mes, o sea unas 5.000 reproducciones completas.
-  Si algún día el tráfico se dispara, mueve el archivo a Vercel Blob o a un CDN de vídeo
+- **Vídeo.** 40,7 MB servidos por rangos HTTP desde `/video/`. Sin cookies de terceros. El
+  cartel va con `preload` para que sea lo primero que se ve, y el reproductor se crea al
+  pulsar play, así que el archivo no se descarga hasta que alguien decide verlo.
+  El archivo actual se recodificó desde la fuente original en 1080p que está en YouTube:
+  720p con hqdn3d + CRF 26 (antes era un 640x360 a 296 kbps, bastante deteriorado).
+  Ojo con el ancho de banda: cada visita que vea el vídeo entero consume ~41 MB. El plan
+  gratuito de Vercel incluye 100 GB al mes, o sea unas 2.400 reproducciones completas.
+  Si el tráfico se dispara, mueve el archivo a Vercel Blob o a un CDN de vídeo
   (Cloudflare R2, Bunny) y cambia solo la constante `FILE` del script.
 - **Accesibilidad.** Foco visible en todos los elementos interactivos,
   `prefers-reduced-motion` respetado y texto alternativo en las imágenes de contenido.
